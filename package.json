@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "koa": "koajs/koa",
+    "koa-session": "koajs/session",
     "mocha": "*",
     "should": "*"
   },
