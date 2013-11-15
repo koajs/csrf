@@ -42,10 +42,7 @@ exports = module.exports = function (app, opts) {
 
   app.context.assertCSRF =
   app.context.assertCsrf = function (body) {
-  // don't allow primitives as the body
-    body = typeof body === 'object' && body
-
-    var token = (body && body._csrf)
+    var token = (typeof body === 'object' && body._csrf)
       || (this.query && this.query._csrf)
       || (this.get('x-csrf-token'))
       || (this.get('x-xsrf-token'))
