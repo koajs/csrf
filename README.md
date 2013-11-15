@@ -7,10 +7,23 @@ CSRF tokens for koa.
 To install, do:
 
 ```js
-require('koa-csrf')(app)
+require('koa-csrf')(app, options)
 ```
 
-Right now, you need to use [session](https://github.com/koajs/session) for CSRF to work.
+### Options
+
+Since people seem to really care about the entropy of CSRF tokens,
+you can override the options.
+
+- `secret` - a function that gets the "secret" for the token.
+  It should have signature `() -> [string]`.
+  By default, it's `() -> this.session.id`.
+  For DB stores, you probably want `() -> this.session.secret`.
+- `salt` - a function that creates a salt.
+  It should have signature `() -> [string]`.
+- `tokenize` - a function that creates the CSRF token.
+  It should have the signature `(secret, salt) -> salt;[string]`.
+  By default, it hashes using `sha1`.
 
 ### this.csrf
 
@@ -18,33 +31,29 @@ Lazily creates a CSRF token.
 CSRF tokens change on every request.
 
 ```js
-app.use(function (next) {
-  return function* () {
-    this.render({
-      csrf: this.csrf
-    })
-  }
+app.use(function* () {
+  this.render({
+    csrf: this.csrf
+  })
 })
 ```
 
-### this.checkCSRF([body])
+### this.assertCSRF([body])
 
 Check the CSRF token of a request with an optional body.
 Will throw if the CSRF token does not exist or is not valid.
 
 ```js
-app.use(function (next) {
-  return function* () {
-    var body = yield this.request.body
-    try {
-      this.checkCSRF(body)
-    } catch (err) {
-      this.status = 403
-      this.body = {
-        message: 'This CSRF token is invalid!'
-      }
-      return
+app.use(function* () {
+  var body = yield* this.request.body()
+  try {
+    this.assertCSRF(body)
+  } catch (err) {
+    this.status = 403
+    this.body = {
+      message: 'This CSRF token is invalid!'
     }
+    return
   }
 })
 ```

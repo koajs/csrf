@@ -17,9 +17,6 @@
     "mail": "me@jongleberry.com",
     "url": "https://github.com/koajs/csrf/issues"
   },
-  "dependencies": {
-    "merge-descriptors": "~0.0.1"
-  },
   "devDependencies": {
     "koa": "koajs/koa",
     "koa-session": "koajs/session",

@@ -1,98 +1,116 @@
 var crypto = require('crypto')
-var merge = require('merge-descriptors')
 
-exports = module.exports = function (app) {
-  merge(app.Context.prototype, exports)
+exports = module.exports = function (app, opts) {
+  opts = opts || {}
+
+  // You can overwrite these yourself
+  // so don't complain about entropy and
+  // CSRF or salt lengths!
+  var secret = opts.secret || exports.secret
+  var salt = opts.salt || exports.salt
+  var tokenize = opts.tokenize || exports.tokenize
+
+  /*
+   * Lazily creates a CSRF token.
+   * Creates one per request.
+   *
+   * @api public
+   */
+
+  app.context.__defineGetter__('csrf', function () {
+    return this._csrf
+      || (this._csrf = tokenize(secret(this), salt()))
+  })
+
+  /**
+   * Asserts that a CSRF token exists and is valid.
+   * Throws a 403 error otherwise.
+   * var body = yield* this.request.json()
+   * try {
+   *   this.assertCSRF(body)
+   * } catch (err) {
+   *   this.status = 403
+   *   this.body = {
+   *     message: 'invalid CSRF token'
+   *   }
+   * }
+   *
+   * @param {Object} body
+   * @return {Context} this
+   * @api public
+   **/
+
+   app.context.assertCSRF =
+   app.context.assertCsrf = function (body) {
+    // don't allow primitives as the body
+    body = typeof body === 'object' && body
+
+    var token = (body && body._csrf)
+      || (this.query && this.query._csrf)
+      || (this.get('x-csrf-token'))
+      || (this.get('x-xsrf-token'))
+
+    if (!token || typeof token !== 'string')
+      this.error(403, 'invalid csrf token')
+
+    var salt = token.split(';').shift()
+    if (token !== tokenize(secret(this), salt))
+      this.error(403, 'invalid csrf token')
+
+    return this
+   }
+
   return app
 }
 
 /*
- * Lazily creates a CSRF token.
- * Creates one per request.
- *
- * @api public
- */
-
-exports.__defineGetter__('csrf', function () {
-  return this._csrf
-    || (this._csrf = this.csrfCreate())
-})
-
-/*
- * Check for a CSRF token with an optional body.
- *
- * var body = yield this.request.body
- * try {
- *   this.checkCSRF(body)
- * } catch (err) {
- *   this.status = 403
- *   this.body = {
- *     message: 'invalid CSRF token'
- *   }
- * }
- *
- * @api public
- */
-
-exports.checkCsrf =
-exports.checkCSRF = function (body) {
-  var token = (body && body._csrf)
-    || (this.query && this.query._csrf)
-    || (this.get('x-csrf-token'))
-    || (this.get('x-xsrf-token'))
-
-  if (!token || typeof token !== 'string')
-    this.error(403, 'invalid csrf token')
-
-  var salt = token.split(';').shift()
-  if (token !== this.csrfCreate(salt))
-    this.error(403, 'invalid csrf token')
-
-  return this
-}
-
-/*
- * CSRF token secret. By default, it's the cookie session's id.
- * If you want to use a different secret, overwrite this value.
+ * Default secret token for CSRF.
+ * By default, this is for cookie sessions whose secret
+ * is the id, which is not actually secret.
+ * For session stores, you probably want to have a
+ * private `.secret` token.
  *
  * @api private
  */
 
-exports.__defineGetter__('csrfSecret', function () {
+exports.secret = function () {
   return this.session.id
-})
+}
 
 /**
  * Generates a random salt, using a fast non-blocking PRNG (Math.random()).
- * Taken from connect.
+ * Yes, this isn't cryptographically secure,
+ * but it doesn't matter.
+ * Length of 10 by default.
  *
- * @param {Number} length
  * @return {String}
  * @api private
  */
 
-var SALTCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+var SALTCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+var SALTCHARSLENGTH = SALTCHARS.length
 
-exports.csrfSalt = function (length) {
-  length = length || 10;
-  var i, r = [];
-  for (i = 0; i < length; ++i) {
-    r.push(SALTCHARS[Math.floor(Math.random() * SALTCHARS.length)]);
-  }
-  return r.join('');
+exports.salt = function () {
+  var salt = ''
+
+  for (var i = 0; i < 10; ++i)
+    salt += SALTCHARS[Math.floor(Math.random() * SALTCHARSLENGTH)]
+
+  return salt
 }
 
 /*
- * Create a token from a salt.
+ * Default CSRF token creation function.
  *
+ * @param {String} secret
+ * @param {String} salt
+ * @return {String}
  * @api private
  */
 
-exports.csrfCreate = function (salt) {
-  salt = salt || this.csrfSalt()
-
+exports.tokenize = function (secret, salt) {
   return salt + ';' + crypto
     .createHash('sha1')
-    .update(salt + ';' + this.csrfSecret)
+    .update(salt + ';' + secret)
     .digest('base64')
 }
