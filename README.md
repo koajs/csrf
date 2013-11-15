@@ -17,7 +17,7 @@ you can override the options.
 
 - `secret` - a function that gets the "secret" for the token.
   It should have signature `() -> [string]`.
-  By default, it's `() -> this.session.id`.
+  By default, it's `() -> this.session.sid`.
   For DB stores, you probably want `() -> this.session.secret`.
 - `salt` - a function that creates a salt.
   It should have signature `() -> [string]`.

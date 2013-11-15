@@ -19,7 +19,7 @@ exports = module.exports = function (app, opts) {
 
   app.context.__defineGetter__('csrf', function () {
     return this._csrf
-      || (this._csrf = tokenize(secret(this), salt()))
+      || (this._csrf = tokenize(secret.call(this), salt()))
   })
 
   /**
@@ -40,9 +40,9 @@ exports = module.exports = function (app, opts) {
    * @api public
    **/
 
-   app.context.assertCSRF =
-   app.context.assertCsrf = function (body) {
-    // don't allow primitives as the body
+  app.context.assertCSRF =
+  app.context.assertCsrf = function (body) {
+  // don't allow primitives as the body
     body = typeof body === 'object' && body
 
     var token = (body && body._csrf)
@@ -54,11 +54,11 @@ exports = module.exports = function (app, opts) {
       this.error(403, 'invalid csrf token')
 
     var salt = token.split(';').shift()
-    if (token !== tokenize(secret(this), salt))
+    if (token !== tokenize(secret.call(this), salt))
       this.error(403, 'invalid csrf token')
 
     return this
-   }
+  }
 
   return app
 }
@@ -74,7 +74,7 @@ exports = module.exports = function (app, opts) {
  */
 
 exports.secret = function () {
-  return this.session.id
+  return this.session.sid
 }
 
 /**
