@@ -22,6 +22,10 @@ exports = module.exports = function (app, opts) {
       || (this._csrf = tokenize(secret.call(this), salt()))
   })
 
+  app.response.__defineGetter__('csrf', function () {
+    return this.ctx.csrf
+  })
+
   /**
    * Asserts that a CSRF token exists and is valid.
    * Throws a 403 error otherwise.
@@ -54,6 +58,12 @@ exports = module.exports = function (app, opts) {
     if (token !== tokenize(secret.call(this), salt))
       this.error(403, 'invalid csrf token')
 
+    return this
+  }
+
+  app.request.assertCSRF =
+  app.request.assertCsrf = function (body) {
+    this.ctx.assertCsrf(body)
     return this
   }
 
