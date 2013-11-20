@@ -52,11 +52,11 @@ exports = module.exports = function (app, opts) {
       || (this.get('x-xsrf-token'))
 
     if (!token || typeof token !== 'string')
-      this.error(403, 'invalid csrf token')
+      this.throw(403, 'invalid csrf token')
 
     var salt = token.split(';').shift()
     if (token !== tokenize(secret.call(this), salt))
-      this.error(403, 'invalid csrf token')
+      this.throw(403, 'invalid csrf token')
 
     return this
   }
