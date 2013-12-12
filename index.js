@@ -6,6 +6,7 @@ exports = module.exports = function (app, opts) {
   // You can overwrite these yourself
   // so don't complain about entropy and
   // CSRF or salt lengths!
+  var length = opts.length || 15
   var secret = opts.secret || exports.secret
   var salt = opts.salt || exports.salt
   var tokenize = opts.tokenize || exports.tokenize
@@ -18,8 +19,13 @@ exports = module.exports = function (app, opts) {
    */
 
   app.context.__defineGetter__('csrf', function () {
-    return this._csrf
-      || (this._csrf = tokenize(secret.call(this), salt()))
+    if (this._csrf)
+      return this._csrf
+
+    var sec =
+    this.session.secret || (this.session.secret = secret(length))
+
+    return this._csrf = tokenize(sec, salt())
   })
 
   app.response.__defineGetter__('csrf', function () {
@@ -46,16 +52,23 @@ exports = module.exports = function (app, opts) {
 
   app.context.assertCSRF =
   app.context.assertCsrf = function (body) {
+    // no session
+    var secret = this.session.secret
+    if (!secret)
+      this.throw(403, 'invalid csrf token')
+
     var token = (typeof body === 'object' && body._csrf)
       || (this.query && this.query._csrf)
       || (this.get('x-csrf-token'))
       || (this.get('x-xsrf-token'))
 
+    // invalid token value
     if (!token || typeof token !== 'string')
       this.throw(403, 'invalid csrf token')
 
+    // incorrect token
     var salt = token.split(';').shift()
-    if (token !== tokenize(secret.call(this), salt))
+    if (token !== tokenize(secret, salt))
       this.throw(403, 'invalid csrf token')
 
     return this
@@ -68,20 +81,6 @@ exports = module.exports = function (app, opts) {
   }
 
   return app
-}
-
-/*
- * Default secret token for CSRF.
- * By default, this is for cookie sessions whose secret
- * is the id, which is not actually secret.
- * For session stores, you probably want to have a
- * private `.secret` token.
- *
- * @api private
- */
-
-exports.secret = function () {
-  return this.session.sid
 }
 
 /**
@@ -120,4 +119,16 @@ exports.tokenize = function (secret, salt) {
     .createHash('sha1')
     .update(salt + ';' + secret)
     .digest('base64')
+}
+
+/**
+ * Create a CSRF secret key.
+ *
+ * @param {Number} length
+ * @return {String}
+ * @api private
+ */
+
+exports.secret = function (length) {
+  return crypto.pseudoRandomBytes(length).toString('base64')
 }

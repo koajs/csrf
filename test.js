@@ -1,7 +1,7 @@
 var supertest = require('supertest')
 var koa = require('koa')
 var sessions = require('koa-session')
-var bodyParser = require('koa-body-parser')
+var parse = require('co-body')
 
 var csrf = require('./')
 
@@ -17,13 +17,11 @@ describe('CSRF Token', function () {
     if (this.method === 'GET') {
       this.body = this.csrf
     } else if (this.method === 'POST') {
-      var body = yield* this.request.json()
+      var body
       try {
-        this.assertCSRF(body)
-      } catch (err) {
-        this.status = 403
-        return
-      }
+        body = yield parse(this)
+      } catch (err) {}
+      this.assertCSRF(body)
       this.status = 204
     }
   })
@@ -117,7 +115,6 @@ function App() {
   var app = koa()
   app.keys = ['a', 'b']
   csrf(app)
-  bodyParser(app)
   app.use(sessions())
   return app
 }

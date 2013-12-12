@@ -20,7 +20,7 @@
   "devDependencies": {
     "koa": "koajs/koa",
     "koa-session": "koajs/session",
-    "koa-body-parser": "koajs/body-parser",
+    "co-body": "*",
     "mocha": "*",
     "should": "*",
     "supertest": "*"
