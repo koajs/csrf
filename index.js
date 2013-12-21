@@ -96,7 +96,8 @@ exports = module.exports = function (app, opts) {
 var SALTCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 var SALTCHARSLENGTH = SALTCHARS.length
 
-exports.salt = function () {
+exports.salt = function (length) {
+  length = length || 10
   var salt = ''
 
   for (var i = 0; i < 10; ++i)

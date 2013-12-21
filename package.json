@@ -1,7 +1,7 @@
 {
   "name": "koa-csrf",
   "description": "CSRF tokens for koa",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": {
     "name": "Jonathan Ong",
     "email": "me@jongleberry.com",
@@ -18,8 +18,8 @@
     "url": "https://github.com/koajs/csrf/issues"
   },
   "devDependencies": {
-    "koa": "koajs/koa",
-    "koa-session": "koajs/session",
+    "koa": ">= 0.1.1",
+    "koa-session": ">= 1.2.0",
     "co-body": "*",
     "mocha": "*",
     "should": "*",

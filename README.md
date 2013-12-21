@@ -12,18 +12,13 @@ require('koa-csrf')(app, options)
 
 ### Options
 
-Since people seem to really care about the entropy of CSRF tokens,
-you can override the options.
+Since people seem to really care about the entropy of CSRF tokens, the hashing algorithm, etc.
+You can override these functions:
 
-- `secret` - a function that gets the "secret" for the token.
-  It should have signature `() -> [string]`.
-  By default, it's `() -> this.session.sid`.
-  For DB stores, you probably want `() -> this.session.secret`.
-- `salt` - a function that creates a salt.
-  It should have signature `() -> [string]`.
-- `tokenize` - a function that creates the CSRF token.
-  It should have the signature `(secret, salt) -> salt;[string]`.
-  By default, it hashes using `sha1`.
+- `length` - Secret key length, default `15`.
+- `secret` - `(length) -> [string]` a function that creates a secret stored as `this.session.secret`
+- `salt` - `(length) -> [string]` a function that creates a salt.
+- `tokenize` - `(secret, salt) -> salt;[string]` a function that creates the CSRF token.
 
 ### this.csrf
 
@@ -45,7 +40,7 @@ Will throw if the CSRF token does not exist or is not valid.
 
 ```js
 app.use(function* () {
-  var body = yield* this.request.body()
+  var body = yield parse(this) // co-body or something
   try {
     this.assertCSRF(body)
   } catch (err) {
