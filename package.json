@@ -18,7 +18,7 @@
     "url": "https://github.com/koajs/csrf/issues"
   },
   "devDependencies": {
-    "koa": ">= 0.1.1",
+    "koa": ">= 0.2.0",
     "koa-session": ">= 1.2.0",
     "co-body": "*",
     "mocha": "*",
@@ -29,6 +29,6 @@
     "test": "make test;"
   },
   "engines": {
-    "node": ">= 0.11.3"
+    "node": ">= 0.11.9"
   }
 }
