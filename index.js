@@ -67,7 +67,7 @@ exports = module.exports = function (app, opts) {
       this.throw(403, 'invalid csrf token')
 
     // incorrect token
-    var salt = token.split(';').shift()
+    var salt = token.split('-').shift()
     if (token !== tokenize(secret, salt))
       this.throw(403, 'invalid csrf token')
 
@@ -116,9 +116,9 @@ exports.salt = function (length) {
  */
 
 exports.tokenize = function (secret, salt) {
-  return salt + ';' + crypto
+  return salt + '-' + crypto
     .createHash('sha1')
-    .update(salt + ';' + secret)
+    .update(salt + '-' + secret)
     .digest('base64')
 }
 

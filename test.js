@@ -5,7 +5,7 @@ var parse = require('co-body')
 
 var csrf = require('./')
 
-var tokenregexp = /^\w+;[\w+\/]+/
+var tokenregexp = /^\w+-[\w+\/]+/
 
 describe('CSRF Token', function () {
   var app = App()
