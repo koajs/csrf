@@ -100,7 +100,7 @@ exports.salt = function (length) {
   length = length || 10
   var salt = ''
 
-  for (var i = 0; i < 10; ++i)
+  for (var i = 0; i < length; ++i)
     salt += SALTCHARS[Math.floor(Math.random() * SALTCHARSLENGTH)]
 
   return salt
