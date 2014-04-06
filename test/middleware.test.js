@@ -3,11 +3,11 @@ var koa = require('koa')
 var sessions = require('koa-session')
 var parse = require('co-body')
 
-var csrf = require('./')
+var csrf = require('../')
 
 var tokenregexp = /^\w+-[\w+\/]+/
 
-describe('CSRF Token', function () {
+describe('CSRF Token Middleware', function () {
   var app = App()
 
   app.use(function* (next) {
@@ -17,11 +17,6 @@ describe('CSRF Token', function () {
     if (this.method === 'GET') {
       this.body = this.csrf
     } else if (this.method === 'POST') {
-      var body
-      try {
-        body = yield parse(this)
-      } catch (err) {}
-      this.assertCSRF(body)
       this.status = 204
     }
   })
@@ -114,7 +109,14 @@ describe('CSRF Token', function () {
 function App() {
   var app = koa()
   app.keys = ['a', 'b']
-  csrf(app)
   app.use(sessions())
+
+  app.use(function *(next) {
+    if (this.is('application/json', 'application/x-www-form-urlencoded'))
+      this.request.body = yield parse(this)
+    yield* next
+  })
+
+  app.use(csrf())
   return app
 }
