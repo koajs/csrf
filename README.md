@@ -2,6 +2,12 @@
 
 CSRF tokens for koa.
 
+## Install
+
+```
+npm install koa-csrf
+```
+
 ## API
 
 To install, do:
@@ -52,6 +58,41 @@ app.use(function* () {
   }
 })
 ```
+
+### Middleware
+
+You can use this module as a koa middleware, it is similar to `connect-csrf`.
+in most situation, you only need:
+
+```js
+var koa = require('koa')
+var csrf = require('koa-csrf')
+var session = require('koa-session')
+
+var app = koa()
+app.keys = ['session secret']
+app.use(session())
+app.use(csrf())
+
+app.use(function* () {
+  if (this.method === 'GET') {
+    this.body = this.csrf
+  } else if (this.method === 'POST') {
+    this.status = 204
+  }
+})
+```
+
+All the options work fine in middleware mode.
+
+```js
+app.use(csrf({
+  length: 20
+}))
+```
+
+You can redefinition csrf handle method by pass `opts.middleware`,
+the default handler is `csrf.middleware`.
 
 ## License
 
