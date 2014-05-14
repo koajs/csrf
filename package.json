@@ -1,7 +1,7 @@
 {
   "name": "koa-csrf",
   "description": "CSRF tokens for koa",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Jonathan Ong",
     "email": "me@jongleberry.com",
