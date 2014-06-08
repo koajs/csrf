@@ -1,3 +1,4 @@
+
 var crypto = require('crypto')
 
 exports = module.exports = function (app, opts) {
@@ -8,13 +9,7 @@ exports = module.exports = function (app, opts) {
     app = null
   }
 
-  // You can overwrite these yourself
-  // so don't complain about entropy and
-  // CSRF or salt lengths!
-  var length = opts.length || 15
-  var secret = opts.secret || exports.secret
-  var salt = opts.salt || exports.salt
-  var tokenize = opts.tokenize || exports.tokenize
+  var tokens = require('csrf-tokens')(opts)
   var middleware = opts.middleware || exports.middleware
 
   if (app) {
@@ -40,13 +35,10 @@ exports = module.exports = function (app, opts) {
      */
 
     context.__defineGetter__('csrf', function () {
-      if (this._csrf)
-        return this._csrf
-
-      var sec =
-      this.session.secret || (this.session.secret = secret(length))
-
-      return this._csrf = tokenize(sec, salt())
+      if (this._csrf) return this._csrf
+      var secret = this.session.secret
+        || (this.session.secret = tokens.secret())
+      return this._csrf = tokens.create(secret)
     })
 
     response.__defineGetter__('csrf', function () {
@@ -75,22 +67,13 @@ exports = module.exports = function (app, opts) {
     context.assertCsrf = function (body) {
       // no session
       var secret = this.session.secret
-      if (!secret)
-        this.throw(403, 'invalid csrf token')
+      if (!secret) this.throw(403, 'invalid csrf token')
 
       var token = (body && body._csrf)
         || (this.query && this.query._csrf)
         || (this.get('x-csrf-token'))
         || (this.get('x-xsrf-token'))
-
-      // invalid token value
-      if (!token || typeof token !== 'string')
-        this.throw(403, 'invalid csrf token')
-
-      // incorrect token
-      var salt = token.split('-').shift()
-      if (token !== tokenize(secret, salt))
-        this.throw(403, 'invalid csrf token')
+      if (!tokens.verify(secret, token)) this.throw(403, 'invalid csrf token')
 
       return this
     }
@@ -102,57 +85,6 @@ exports = module.exports = function (app, opts) {
     }
 
   }
-}
-
-/**
- * Generates a random salt, using a fast non-blocking PRNG (Math.random()).
- * Yes, this isn't cryptographically secure,
- * but it doesn't matter.
- * Length of 10 by default.
- *
- * @return {String}
- * @api private
- */
-
-var SALTCHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-var SALTCHARSLENGTH = SALTCHARS.length
-
-exports.salt = function (length) {
-  length = length || 10
-  var salt = ''
-
-  for (var i = 0; i < length; ++i)
-    salt += SALTCHARS[Math.floor(Math.random() * SALTCHARSLENGTH)]
-
-  return salt
-}
-
-/*
- * Default CSRF token creation function.
- *
- * @param {String} secret
- * @param {String} salt
- * @return {String}
- * @api private
- */
-
-exports.tokenize = function (secret, salt) {
-  return salt + '-' + crypto
-    .createHash('sha1')
-    .update(salt + '-' + secret)
-    .digest('base64')
-}
-
-/**
- * Create a CSRF secret key.
- *
- * @param {Number} length
- * @return {String}
- * @api private
- */
-
-exports.secret = function (length) {
-  return crypto.pseudoRandomBytes(length).toString('base64')
 }
 
 /**

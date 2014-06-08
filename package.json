@@ -10,9 +10,12 @@
   },
   "license": "MIT",
   "repository": "koajs/csrf",
+  "dependencies": {
+    "csrf-tokens": "1"
+  },
   "devDependencies": {
-    "koa": "~0.6.0",
-    "koa-session": ">= 1.2.0",
+    "koa": "0",
+    "koa-session": "1",
     "co-body": "*",
     "mocha": "*",
     "should": "*",
