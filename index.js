@@ -1,6 +1,4 @@
 
-var crypto = require('crypto')
-
 exports = module.exports = function (app, opts) {
   if (isApp(app)) {
     opts = opts || {}
