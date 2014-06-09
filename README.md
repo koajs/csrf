@@ -1,4 +1,4 @@
-# Koa CSRF [![Build Status](https://travis-ci.org/koajs/csrf.png)](https://travis-ci.org/koajs/csrf)
+# Koa CSRF [![Build Status](https://travis-ci.org/koajs/csrf.svg)](https://travis-ci.org/koajs/csrf)
 
 CSRF tokens for koa.
 
