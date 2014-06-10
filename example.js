@@ -5,7 +5,8 @@ var session = require('koa-session')
 var app = koa()
 app.keys = ['session secret']
 app.use(session())
-app.use(csrf())
+csrf(app)
+app.use(csrf.middleware)
 
 app.use(function* () {
   if (this.method === 'GET') {
