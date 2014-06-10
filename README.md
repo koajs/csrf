@@ -83,14 +83,3 @@ app.use(function* () {
   }
 })
 ```
-
-All the options work fine in middleware mode.
-
-```js
-app.use(csrf({
-  length: 20
-}))
-```
-
-You can redefinition csrf handle method by pass `opts.middleware`,
-the default handler is `csrf.middleware`.
