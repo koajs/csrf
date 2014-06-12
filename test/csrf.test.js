@@ -11,8 +11,7 @@ describe('CSRF Token', function () {
   var app = App()
 
   app.use(function* (next) {
-    if (this.path !== '/')
-      return yield next
+    if (this.path !== '/' && this.path !== '/string') return yield* next
 
     if (this.method === 'GET') {
       this.body = this.csrf
@@ -21,7 +20,8 @@ describe('CSRF Token', function () {
       try {
         body = yield parse(this)
       } catch (err) {}
-      this.assertCSRF(body)
+      if (this.path === '/string') this.assertCSRF(body._csrf)
+      else this.assertCSRF(body)
       this.status = 204
     }
   })
@@ -107,6 +107,17 @@ describe('CSRF Token', function () {
       .post('/')
       .set('x-xsrf-token', csrf)
       .expect(204, done)
+    })
+  })
+
+  describe('.assertCSRF()', function () {
+    it('should support a string value', function (done) {
+      request
+      .post('/string')
+      .send({
+        _csrf: csrf
+      })
+      .expect(204, done);
     })
   })
 })

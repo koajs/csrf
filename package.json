@@ -22,7 +22,7 @@
     "supertest": "*"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require should --reporter spec --harmony-generators"
+    "test": "NODE_ENV=test mocha --require should --reporter spec --harmony-generators --bail"
   },
   "engines": {
     "node": ">= 0.11.3"
