@@ -90,6 +90,13 @@ describe('CSRF Token Middleware', function () {
       .expect(204, done)
     })
 
+    it('querystring with body', function (done) {
+      request
+      .post('/?_csrf=' + encodeURIComponent(csrf))
+      .send({ foo: 'bar' })
+      .expect(204, done)
+    })
+
     it('x-csrf-token', function (done) {
       request
       .post('/')

@@ -67,10 +67,11 @@ exports = module.exports = function (app, opts) {
       var secret = this.session.secret
       if (!secret) this.throw(403, 'invalid csrf token')
 
-      var token = (body && (body._csrf || body))
+      var token = (body && body._csrf)
         || (this.query && this.query._csrf)
         || (this.get('x-csrf-token'))
         || (this.get('x-xsrf-token'))
+        || body
       if (!tokens.verify(secret, token)) this.throw(403, 'invalid csrf token')
 
       return this
