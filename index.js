@@ -99,19 +99,9 @@ exports.middleware = function* (next) {
     return yield* next
   }
 
-  try {
-    // bodyparser middlewares maybe store body in request.body
-    // or you can just set csrf token header
-    this.assertCSRF(this.request.body)
-  } catch (err) {
-    if (err.status === 403) {
-      this.status = 403
-      this.body = 'invalid csrf token'
-    } else {
-      this.throw(err)
-    }
-    return
-  }
+  // bodyparser middlewares maybe store body in request.body
+  // or you can just set csrf token header
+  this.assertCSRF(this.request.body)
 
   yield* next
 }
