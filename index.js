@@ -35,7 +35,7 @@ exports = module.exports = function (app, opts) {
     context.__defineGetter__('csrf', function () {
       if (this._csrf) return this._csrf
       var secret = this.session.secret
-        || (this.session.secret = tokens.secret())
+        || (this.session.secret = tokens.secretSync())
       return this._csrf = tokens.create(secret)
     })
 
