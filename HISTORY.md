@@ -1,4 +1,19 @@
 
+2.1.2 / 2014-06-18
+==================
+
+  * bump csrf-tokens
+
+2.1.1 / 2014-06-16
+==================
+
+  * fix when tokens are passed as query strings
+
+2.1.0 / 2014-06-12
+==================
+
+  * allow strings to be passed to .assertCSRF()
+
 2.0.0 / 2014-06-08
 ==================
 

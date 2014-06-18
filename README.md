@@ -18,13 +18,7 @@ require('koa-csrf')(app, options)
 
 ### Options
 
-Since people seem to really care about the entropy of CSRF tokens, the hashing algorithm, etc.
-You can override these functions:
-
-- `length` - Secret key length, default `15`.
-- `secret` - `(length) -> [string]` a function that creates a secret stored as `this.session.secret`
-- `salt` - `(length) -> [string]` a function that creates a salt.
-- `tokenize` - `(secret, salt) -> salt;[string]` a function that creates the CSRF token.
+All options are passed to [csrf-tokens](https://github.com/expressjs/csrf-tokens).
 
 ### this.csrf
 
