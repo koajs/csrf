@@ -68,6 +68,7 @@ exports = module.exports = function (app, opts) {
       if (!secret) this.throw(403, 'invalid csrf token')
 
       var token = (body && body._csrf)
+        || (body && body.fields._csrf)      // **** koa-better-body will return body.fields._csrf  ****
         || (this.query && this.query._csrf)
         || (this.get('x-csrf-token'))
         || (this.get('x-xsrf-token'))
