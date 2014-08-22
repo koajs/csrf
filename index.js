@@ -7,7 +7,7 @@ exports = module.exports = function (app, opts) {
     app = null
   }
 
-  var tokens = require('csrf-tokens')(opts)
+  var tokens = require('csrf')(opts)
   var middleware = opts.middleware || exports.middleware
 
   if (app) {

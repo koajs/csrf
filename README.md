@@ -1,4 +1,12 @@
-# Koa CSRF [![Build Status](https://travis-ci.org/koajs/csrf.svg)](https://travis-ci.org/koajs/csrf)
+# Koa CSRF
+
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![Dependency Status][david-image]][david-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+[![Gittip][gittip-image]][gittip-url]
 
 CSRF tokens for koa.
 
@@ -77,3 +85,20 @@ app.use(function* () {
   }
 })
 ```
+
+[npm-image]: https://img.shields.io/npm/v/koa-csrf.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/koa-csrf
+[github-tag]: http://img.shields.io/github/tag/koajs/csrf.svg?style=flat-square
+[github-url]: https://github.com/koajs/csrf/tags
+[travis-image]: https://img.shields.io/travis/koajs/csrf.svg?style=flat-square
+[travis-url]: https://travis-ci.org/koajs/csrf
+[coveralls-image]: https://img.shields.io/coveralls/koajs/csrf.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/koajs/csrf?branch=master
+[david-image]: http://img.shields.io/david/koajs/csrf.svg?style=flat-square
+[david-url]: https://david-dm.org/koajs/csrf
+[license-image]: http://img.shields.io/npm/l/koa-csrf.svg?style=flat-square
+[license-url]: LICENSE
+[downloads-image]: http://img.shields.io/npm/dm/koa-csrf.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/koa-csrf
+[gittip-image]: https://img.shields.io/gittip/jonathanong.svg?style=flat-square
+[gittip-url]: https://www.gittip.com/jonathanong/

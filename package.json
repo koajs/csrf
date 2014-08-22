@@ -11,9 +11,10 @@
   "license": "MIT",
   "repository": "koajs/csrf",
   "dependencies": {
-    "csrf-tokens": "2"
+    "csrf": "~2.0.1"
   },
   "devDependencies": {
+    "istanbul-harmony": "0",
     "koa": "0",
     "koa-session": "1",
     "co-body": "*",
@@ -22,12 +23,15 @@
     "supertest": "*"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require should --reporter spec --harmony-generators --bail"
-  },
-  "engines": {
-    "node": ">= 0.11.3"
+    "test": "NODE_ENV=test mocha --harmony-generators --reporter spec --require should",
+    "test-cov": "NODE_ENV=test node --harmony-generators node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter dot --require should",
+    "test-travis": "NODE_ENV=test node --harmony-generators node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --reporter dot --require should"
   },
   "files": [
     "index.js"
+  ],
+  "keywords": [
+    "koa",
+    "csrf"
   ]
 }
