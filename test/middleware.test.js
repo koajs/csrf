@@ -1,3 +1,4 @@
+var should = require('should')
 var supertest = require('supertest')
 var koa = require('koa')
 var sessions = require('koa-session')
@@ -42,6 +43,8 @@ describe('CSRF Token Middleware', function () {
 
     it('a single token per request', function (done) {
       app.use(function* (next) {
+        if (this.path !== '/asdf')
+          return yield next
         this.csrf.should.equal(this.csrf)
         this.status = 204
       })
@@ -63,6 +66,20 @@ describe('CSRF Token Middleware', function () {
         csrf.should.not.equal(res.text)
         done()
       })
+    })
+
+    it('a null token when session is invalid', function (done) {
+      app.use(function* (next) {
+        if (this.path !== '/reset')
+          return yield next
+        this.session = null
+        this.status = 204
+        should(this.csrf).not.be.ok
+      })
+
+      supertest(app.listen())
+      .get('/reset')
+      .expect(204, done)
     })
   })
 
