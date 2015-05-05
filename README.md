@@ -32,6 +32,7 @@ All options are passed to [csrf-tokens](https://github.com/expressjs/csrf-tokens
 
 Lazily creates a CSRF token.
 CSRF tokens change on every request.
+Returns null if session is invalid.
 
 ```js
 app.use(function* () {
