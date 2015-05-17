@@ -11,7 +11,7 @@
   "license": "MIT",
   "repository": "koajs/csrf",
   "dependencies": {
-    "csrf": "~2.0.1"
+    "csrf": "^3.0.0"
   },
   "devDependencies": {
     "co-body": "*",
