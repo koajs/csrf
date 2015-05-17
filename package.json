@@ -14,10 +14,10 @@
     "csrf": "~2.0.1"
   },
   "devDependencies": {
+    "co-body": "*",
     "istanbul-harmony": "0",
     "koa": "0",
-    "koa-session": "1",
-    "co-body": "*",
+    "koa-session": "^3.1.0",
     "mocha": "*",
     "should": "*",
     "supertest": "*"

@@ -126,6 +126,6 @@ function App() {
   var app = koa()
   app.keys = ['a', 'b']
   csrf(app)
-  app.use(sessions())
+  app.use(sessions(app))
   return app
 }

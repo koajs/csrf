@@ -116,7 +116,7 @@ describe('CSRF Token Middleware', function () {
 function App() {
   var app = koa()
   app.keys = ['a', 'b']
-  app.use(sessions())
+  app.use(sessions(app))
 
   app.use(function *(next) {
     if (this.is('application/json', 'application/x-www-form-urlencoded'))
