@@ -1,4 +1,9 @@
 
+2.4.0 / 2015-10-31
+==================
+
+  * More infomation when missing secret or token
+
 2.3.0 / 2015-05-17
 ==================
 
