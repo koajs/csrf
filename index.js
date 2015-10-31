@@ -66,13 +66,14 @@ exports = module.exports = function (app, opts) {
     context.assertCsrf = function (body) {
       // no session
       var secret = this.session.secret
-      if (!secret) this.throw(403, 'invalid csrf token')
+      if (!secret) this.throw(403, 'secret is missing')
 
       var token = (body && body._csrf)
         || (this.query && this.query._csrf)
         || (this.get('x-csrf-token'))
         || (this.get('x-xsrf-token'))
         || body
+      if (!token) this.throw(403, 'token is missing')
       if (!tokens.verify(secret, token)) this.throw(403, 'invalid csrf token')
 
       return this
