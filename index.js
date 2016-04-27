@@ -17,7 +17,7 @@ exports = module.exports = function (app, opts) {
 
   return function* csrf(next) {
     define(this)
-    yield* middleware.call(this, next)
+    yield middleware.call(this, next)
   }
 
   function define(ctx) {
@@ -47,7 +47,7 @@ exports = module.exports = function (app, opts) {
     /**
      * Asserts that a CSRF token exists and is valid.
      * Throws a 403 error otherwise.
-     * var body = yield* this.request.json()
+     * var body = yield this.request.json()
      * try {
      *   this.assertCSRF(body)
      * } catch (err) {
@@ -98,14 +98,14 @@ exports.middleware = function* (next) {
   if (this.method === 'GET'
     || this.method === 'HEAD'
     || this.method === 'OPTIONS') {
-    return yield* next
+    return yield next
   }
 
   // bodyparser middlewares maybe store body in request.body
   // or you can just set csrf token header
   this.assertCSRF(this.request.body)
 
-  yield* next
+  yield next
 }
 
 /**
