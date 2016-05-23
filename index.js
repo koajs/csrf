@@ -1,9 +1,21 @@
+var merge = require('lodash.merge')
+
+var defaults = {
+  getSecret: function (ctx) {
+    if (!ctx.session) return null;
+    return ctx.session.secret;
+  },
+  setSecret: function (ctx, secret) {
+    if (!ctx.session) ctx.throw(500, 'session is missing')
+    ctx.session.secret = secret;
+  }
+};
 
 exports = module.exports = function (app, opts) {
   if (isApp(app)) {
-    opts = opts || {}
+    opts = merge({}, defaults, opts);
   } else {
-    opts = app || {}
+    opts = merge({}, defaults, app);
     app = null
   }
 
@@ -34,9 +46,11 @@ exports = module.exports = function (app, opts) {
 
     context.__defineGetter__('csrf', function () {
       if (this._csrf) return this._csrf
-      if (!this.session) return null
-      var secret = this.session.secret
-        || (this.session.secret = tokens.secretSync())
+      var secret = opts.getSecret(this);
+      if (secret === null) return null
+      if (!secret) {
+        opts.setSecret(this, secret = tokens.secretSync());
+      }
       return this._csrf = tokens.create(secret)
     })
 
@@ -65,7 +79,7 @@ exports = module.exports = function (app, opts) {
     context.assertCSRF =
     context.assertCsrf = function (body) {
       // no session
-      var secret = this.session.secret
+      var secret = opts.getSecret(this)
       if (!secret) this.throw(403, 'secret is missing')
 
       var token = (body && body._csrf)
