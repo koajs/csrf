@@ -11,22 +11,6 @@ var tokenregexp = /^\w+-[\w+\/-]+/
 describe('CSRF Token', function () {
   var app = App()
 
-  app.use(function* (next) {
-    if (this.path !== '/' && this.path !== '/string') return yield* next
-
-    if (this.method === 'GET') {
-      this.body = this.csrf
-    } else if (this.method === 'POST') {
-      var body
-      try {
-        body = yield parse(this)
-      } catch (err) {}
-      if (this.path === '/string') this.assertCSRF(body._csrf)
-      else this.request.assertCSRF(body)
-      this.status = 204
-    }
-  })
-
   var request = supertest.agent(app.listen())
 
   var csrf
@@ -155,5 +139,20 @@ function App() {
   app.keys = ['a', 'b']
   csrf(app)
   app.use(sessions(app))
+  app.use(function* (next) {
+    if (this.path !== '/' && this.path !== '/string') return yield* next
+
+    if (this.method === 'GET') {
+      this.body = this.csrf
+    } else if (this.method === 'POST') {
+      var body
+      try {
+        body = yield parse(this)
+      } catch (err) {}
+      if (this.path === '/string') this.assertCSRF(body._csrf)
+      else this.request.assertCSRF(body)
+      this.status = 204
+    }
+  })
   return app
 }
