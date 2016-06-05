@@ -69,7 +69,7 @@ exports = module.exports = function (app, opts) {
       if (!secret) this.throw(403, 'secret is missing')
 
       var token = (body && body._csrf)
-        || (this.query && this.query._csrf)
+        || (!opts.disableQuery && this.query && this.query._csrf)
         || (this.get('x-csrf-token'))
         || (this.get('x-xsrf-token'))
         || body

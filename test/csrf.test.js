@@ -122,6 +122,36 @@ describe('CSRF Token', function () {
     })
   })
 
+  describe('given disableQuery=true', function () {
+    var app = null
+    var csrf = null
+    var request = null
+
+    before(function (done) {
+      app = App({ disableQuery: true })
+      request = supertest.agent(app.listen())
+
+      request
+      .get('/')
+      .expect(200)
+      .end(function (err, res) {
+        if (err)
+          return done(err)
+
+        csrf = res.text
+        done()
+      })
+    })
+
+    it('should not respect the _csrf querystring', function (done) {
+      var app = App({ disableQuery: true })
+      request
+      .post('/?_csrf=' + encodeURIComponent(csrf))
+      .expect(403)
+      .end(done)
+    })
+  })
+
   describe('.assertCSRF()', function () {
     it('should support a string value', function (done) {
       request
@@ -134,10 +164,10 @@ describe('CSRF Token', function () {
   })
 })
 
-function App() {
+function App(opts) {
   var app = koa()
   app.keys = ['a', 'b']
-  csrf(app)
+  csrf(app, opts)
   app.use(sessions(app))
   app.use(function* (next) {
     if (this.path !== '/' && this.path !== '/string') return yield* next
