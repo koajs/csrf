@@ -144,7 +144,6 @@ describe('CSRF Token', function () {
     })
 
     it('should not respect the _csrf querystring', function (done) {
-      var app = App({ disableQuery: true })
       request
       .post('/?_csrf=' + encodeURIComponent(csrf))
       .expect(403)
