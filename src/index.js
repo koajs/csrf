@@ -79,7 +79,7 @@ export default class CSRF {
         this.opts.invalidTokenMessage
       );
 
-    next();
+    return next();
 
   }
 
