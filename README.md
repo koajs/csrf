@@ -1,3 +1,4 @@
+
 # Koa CSRF
 
 [![NPM version][npm-image]][npm-url]
@@ -7,83 +8,100 @@
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
-CSRF tokens for koa.
+> CSRF tokens for Koa >= 2.x (next).  For Koa < 2.x (next) see the 2.x branch.
+
 
 ## Install
 
-```
-npm install koa-csrf
-```
+> For koa@>=2.x (next):
 
-## API
-
-To install, do:
-
-```js
-require('koa-csrf')(app, options)
+```bash
+npm install --save koa-csrf@3.x
 ```
 
-### Options
+> For koa@<2.x:
 
-All options are passed to [csrf-tokens](https://github.com/expressjs/csrf-tokens).
-
-### this.csrf
-
-Lazily creates a CSRF token.
-CSRF tokens change on every request.
-Returns null if session is invalid.
-
-```js
-app.use(function* () {
-  this.render({
-    csrf: this.csrf
-  })
-})
+```bash
+npm install --save koa-csrf@2.x
 ```
 
-### this.assertCSRF([body])
 
-Check the CSRF token of a request with an optional body.
-Will throw if the CSRF token does not exist or is not valid.
+## Usage
 
-```js
-app.use(function* () {
-  var body = yield parse(this) // co-body or something
-  try {
-    this.assertCSRF(body)
-  } catch (err) {
-    this.status = 403
-    this.body = {
-      message: 'This CSRF token is invalid!'
+1. Add middleware in Koa app (default options are shown):
+  ```js
+  import Koa from 'koa';
+  import bodyParser from 'koa-bodyparser';
+  import session from 'koa-generic-session';
+  import convert from 'koa-convert';
+
+  const app = new Koa();
+
+  // set the session keys
+  app.keys = [ 'a', 'b' ];
+
+  // add session support
+  app.use(convert(session()));
+
+  // add body parsing
+  app.use(bodyParser());
+
+  // add the CSRF middleware
+  app.use(new CSRF({
+    invalidSessionSecretMessage: 'Invalid session secret',
+    invalidSessionSecretStatusCode: 403,
+    invalidTokenMessage: 'Invalid CSRF token',
+    invalidTokenStatusCode: 403,
+    excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
+    disableQuery: false
+  }));
+
+  // your middleware here (e.g. parse a form submit)
+  app.use((ctx, next) => {
+
+    if (![ 'GET', 'POST' ].includes(ctx.method))
+      return next();
+
+    if (ctx.method === 'GET') {
+      ctx.body = ctx.csrf;
+      return;
     }
-    return
-  }
-})
-```
 
-### Middleware
+    ctx.body = 'OK';
 
-koa-csrf also provide a koa middleware, it is similar to `connect-csrf`.
-in most situation, you only need:
+  });
 
-```js
-var koa = require('koa')
-var csrf = require('koa-csrf')
-var session = require('koa-session')
+  app.listen();
+  ```
 
-var app = koa()
-app.keys = ['session secret']
-session(app)
-app.use(csrf())
+2. Add the CSRF token in your template forms:
 
-app.use(function* () {
-  if (this.method === 'GET') {
-    this.body = this.csrf
-  } else if (this.method === 'POST') {
-    this.status = 204
-  }
-})
-```
+  > Jade Template:
+
+  ```jade
+  form(action='/register', method='POST')
+    input(type='hidden', name='_csrf', value=csrf)
+    input(type='email', name='email', placeholder='Email')
+    input(type='password', name='password', placeholder='Password')
+    button(type='submit') Register
+  ```
+
+  > EJS Template:
+
+  ```ejs
+  <form action="/register" method="POST">
+    <input type="hidden" name="_csrf" value="<%= csrf %>" />
+    <input type="email" name="email" placeholder="Email" />
+    <input type="password" name="password" placeholder="Password" />
+    <button type="submit">Register</button>
+  </form>
+  ```
+
+## Open Source Contributor Requests
+
+- [ ] Existing methods from 1.x package added to 3.x
+- [ ] Existing tests from 1.x package added to 3.x
+
 
 [npm-image]: https://img.shields.io/npm/v/koa-csrf.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/koa-csrf
