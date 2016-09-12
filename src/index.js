@@ -59,7 +59,10 @@ export default class CSRF {
         this.opts.invalidSessionSecretMessage
       );
 
-    const token = (ctx.request.body && typeof ctx.request.body._csrf === 'string')
+    const bodyToken = (ctx.request.body && typeof ctx.request.body._csrf === 'string')
+      ? ctx.request.body._csrf : false;
+
+    const token = bodyToken
       || (!this.opts.disableQuery && ctx.query && ctx.query._csrf)
       || ctx.get('x-csrf-token')
       || ctx.get('x-xsrf-token');
