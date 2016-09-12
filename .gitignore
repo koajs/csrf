@@ -1,8 +1,12 @@
 
-.DS_Store*
-*.log
-*.gz
+# osx
+.DS_Store
 
-node_modules
-coverage
-cache
+# project
+node_modules/
+logs
+*.log
+npm-debug.log*
+*.idea
+coverage/
+lib

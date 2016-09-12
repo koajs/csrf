@@ -1,37 +1,67 @@
 {
   "name": "koa-csrf",
   "description": "CSRF tokens for koa",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "author": {
     "name": "Jonathan Ong",
     "email": "me@jongleberry.com",
     "url": "http://jongleberry.com",
     "twitter": "https://twitter.com/jongleberry"
   },
-  "license": "MIT",
-  "repository": "koajs/csrf",
+  "bugs": "koajs/csrf/issues",
+  "contributors": [
+    {
+      "name": "Nick Baugh",
+      "email": "niftylettuce@gmail.com"
+    }
+  ],
   "dependencies": {
-    "csrf": "^3.0.0"
+    "csrf": "^3.0.3"
   },
   "devDependencies": {
-    "co-body": "*",
-    "istanbul-harmony": "0",
-    "koa": "0",
-    "koa-session": "^3.1.0",
-    "mocha": "*",
-    "should": "*",
-    "supertest": "*"
+    "babel-cli": "^6.14.0",
+    "babel-preset-crocodile": "^1.0.0",
+    "chai": "^3.5.0",
+    "codecov": "^1.0.1",
+    "dirty-chai": "^1.2.2",
+    "eslint-config-crocodile": "^1.0.0",
+    "istanbul": "^1.1.0-alpha.1",
+    "koa": "^2.0.0-alpha.3",
+    "koa-bodyparser": "^3.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-generic-session": "^1.11.3",
+    "mocha": "^3.0.2",
+    "supertest": "^2.0.0"
   },
-  "scripts": {
-    "test": "NODE_ENV=test mocha --harmony --reporter spec --require should",
-    "test-cov": "NODE_ENV=test node --harmony node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --reporter dot --require should",
-    "test-travis": "NODE_ENV=test node --harmony node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --reporter dot --require should"
+  "engines": {
+    "node": ">= 6.x"
   },
-  "files": [
-    "index.js"
-  ],
+  "homepage": "https://github.com/koajs/csrf",
   "keywords": [
+    "cross",
+    "csrf",
+    "forgery",
     "koa",
-    "csrf"
-  ]
+    "koa2",
+    "koa@2",
+    "koa@next",
+    "koanext",
+    "next",
+    "request",
+    "security",
+    "site"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "repository": "koajs/csrf",
+  "scripts": {
+    "analyze-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul cover node_modules/.bin/_mocha",
+    "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
+    "compile": "rm -rf lib/ && babel -d lib src",
+    "coverage": "rm -rf coverage/ && npm run analyze-coverage && npm run check-coverage && node_modules/.bin/codecov",
+    "lint": "eslint .",
+    "mocha": "NODE_ENV=test node_modules/.bin/_mocha",
+    "prepublish": "npm run test",
+    "test": "npm run lint && npm run compile && npm run coverage"
+  }
 }
