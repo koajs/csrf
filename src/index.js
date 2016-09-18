@@ -40,7 +40,8 @@ export default class CSRF {
 
       if (!ctx.session) return null;
 
-      ctx.session.secret = this.tokens.secretSync();
+      if (!ctx.session.secret)
+        ctx.session.secret = this.tokens.secretSync();
 
       ctx._csrf = this.tokens.create(ctx.session.secret);
 
@@ -54,16 +55,15 @@ export default class CSRF {
       return next();
 
     if (!ctx.session.secret)
-      return ctx.throw(
-        this.opts.invalidSessionSecretStatusCode,
-        this.opts.invalidSessionSecretMessage
-      );
+      ctx.session.secret = this.tokens.secretSync();
 
     const bodyToken = (ctx.request.body && typeof ctx.request.body._csrf === 'string')
       ? ctx.request.body._csrf : false;
 
     const token = bodyToken
       || (!this.opts.disableQuery && ctx.query && ctx.query._csrf)
+      || ctx.get('csrf-token')
+      || ctx.get('xsrf-token')
       || ctx.get('x-csrf-token')
       || ctx.get('x-xsrf-token');
 
