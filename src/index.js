@@ -1,4 +1,3 @@
-
 import csrf from 'csrf';
 
 export default class CSRF {
@@ -51,7 +50,7 @@ export default class CSRF {
 
     ctx.response.__defineGetter__('csrf', () => ctx.csrf);
 
-    if (this.opts.excludedMethods.includes(ctx.method))
+    if (this.opts.excludedMethods.indexOf(ctx.method) !== -1)
       return next();
 
     if (!ctx.session.secret)
