@@ -1,3 +1,9 @@
+
+3.0.5 / 2017-03-16
+==================
+
+  * Update deprecated `ctx.throw` argument order (#33)
+
 3.0.4 / 2016-10-02
 ==================
   * fix usage of includes without --harmony tag
