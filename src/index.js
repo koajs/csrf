@@ -68,8 +68,8 @@ export default class CSRF {
 
     if (!token)
       return ctx.throw(
-        this.opts.invalidTokenMessage,
-        this.opts.invalidTokenStatusCode
+        this.opts.invalidTokenStatusCode,
+        this.opts.invalidTokenMessage
       );
 
     if (!this.tokens.verify(ctx.session.secret, token))
