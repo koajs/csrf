@@ -24,6 +24,7 @@
     "chai": "^3.5.0",
     "codecov": "^1.0.1",
     "dirty-chai": "^1.2.2",
+    "eslint": "^3.17.1",
     "eslint-config-crocodile": "^1.0.0",
     "istanbul": "^1.1.0-alpha.1",
     "koa": "^2.0.0-alpha.3",
