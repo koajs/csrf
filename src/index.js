@@ -1,6 +1,6 @@
 import csrf from 'csrf';
 
-export default class CSRF {
+module.exports = class CSRF {
 
   constructor(opts) {
 
@@ -82,4 +82,4 @@ export default class CSRF {
 
   }
 
-}
+};
