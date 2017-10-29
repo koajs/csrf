@@ -2,6 +2,14 @@ import csrf from 'csrf';
 
 export default class CSRF {
 
+  /**
+   * Factory method for the middleware.
+   *
+   * This constructor returns the actual middleware function.
+   *
+   * @param {Object} opts
+   * @return {Function}
+   */
   constructor(opts) {
 
     this.opts = opts || {};
@@ -30,6 +38,13 @@ export default class CSRF {
 
   }
 
+  /**
+   * Middelware handler
+   *
+   * @param {Context} ctx
+   * @param {Function} next
+   * @return {Function}
+   */
   middleware = (ctx, next) => {
 
     ctx.__defineGetter__('csrf', () => {
