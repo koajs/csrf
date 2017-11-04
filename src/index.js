@@ -1,6 +1,14 @@
 import csrf from 'csrf';
 
 export default class CSRF {
+  /**
+   * Factory method for the middleware.
+   *
+   * This constructor returns the actual middleware function.
+   *
+   * @param {Object} opts
+   * @return {Function}
+   */
   constructor(opts) {
     this.opts = Object.assign({
       invalidSessionSecretMessage: 'Invalid session secret',
@@ -15,6 +23,13 @@ export default class CSRF {
     return this.middleware;
   }
 
+  /**
+   * Middelware handler
+   *
+   * @param {Context} ctx
+   * @param {Function} next
+   * @return {Function}
+   */
   middleware = (ctx, next) => {
     ctx.__defineGetter__('csrf', () => {
       if (ctx._csrf) return ctx._csrf;

@@ -34,6 +34,7 @@ npm install --save koa-csrf@2.x
   import bodyParser from 'koa-bodyparser';
   import session from 'koa-generic-session';
   import convert from 'koa-convert';
+  import CSRF from 'koa-csrf';
 
   const app = new Koa();
 
