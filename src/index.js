@@ -2,24 +2,16 @@ const csrf = require('csrf');
 const autoBind = require('auto-bind');
 
 class CSRF {
-  constructor(opts) {
-    this.opts = opts || {};
-
-    if (!this.opts.invalidTokenMessage) {
-      this.opts.invalidTokenMessage = 'Invalid CSRF token';
-    }
-
-    if (!this.opts.invalidTokenStatusCode) {
-      this.opts.invalidTokenStatusCode = 403;
-    }
-
-    if (!this.opts.excludedMethods) {
-      this.opts.excludedMethods = ['GET', 'HEAD', 'OPTIONS'];
-    }
-
-    if (typeof this.opts.disableQuery !== 'boolean') {
-      this.opts.disableQuery = false;
-    }
+  constructor(opts = {}) {
+    this.opts = Object.assign(
+      {
+        invalidTokenMessage: 'Invalid CSRF token',
+        invalidTokenStatusCode: 403,
+        excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
+        disableQuery: false
+      },
+      opts
+    );
 
     this.tokens = csrf(opts);
 
