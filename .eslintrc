@@ -1,3 +1,16 @@
 {
-  "extends": "crocodile"
+  "extends": ["eslint:recommended", "plugin:node/recommended"],
+  "rules": {
+    "no-unsafe-finally": "warn",
+    "no-cond-assign": "warn",
+    "no-console": "warn",
+    "no-control-regex": "warn",
+    "no-empty": "warn",
+    "no-extra-semi": "warn",
+    "no-func-assign": "warn",
+    "no-undef": "warn",
+    "no-unused-vars": "warn",
+    "no-useless-escape": "warn",
+    "node/no-deprecated-api": "warn"
+  }
 }

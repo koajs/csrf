@@ -1,6 +1,6 @@
 {
   "name": "koa-csrf",
-  "description": "CSRF tokens for koa",
+  "description": "CSRF tokens for Koa",
   "version": "3.0.6",
   "author": {
     "name": "Jonathan Ong",
@@ -9,36 +9,60 @@
     "twitter": "https://twitter.com/jongleberry"
   },
   "bugs": "koajs/csrf/issues",
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
   "contributors": [
     {
       "name": "Nick Baugh",
-      "email": "niftylettuce@gmail.com"
+      "email": "niftylettuce@gmail.com",
+      "url": "https://github.com/niftylettuce"
     }
   ],
   "dependencies": {
-    "csrf": "^3.0.3"
+    "auto-bind": "^2.0.0",
+    "csrf": "^3.0.6"
   },
   "devDependencies": {
-    "babel-cli": "^6.14.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-crocodile": "^1.0.0",
-    "chai": "^3.5.0",
-    "codecov": "^1.0.1",
-    "dirty-chai": "^1.2.2",
-    "eslint": "^3.17.1",
-    "eslint-config-crocodile": "^1.0.0",
-    "istanbul": "^1.1.0-alpha.1",
-    "koa": "^2.0.0-alpha.3",
-    "koa-bodyparser": "^3.2.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
+    "ava": "1.0.1",
+    "codecov": "latest",
+    "cross-env": "latest",
+    "eslint": "latest",
+    "eslint-config-xo-lass": "latest",
+    "eslint-plugin-node": "^8.0.1",
+    "fixpack": "latest",
+    "husky": "latest",
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",
-    "koa-generic-session": "^1.11.3",
-    "mocha": "^3.0.2",
-    "supertest": "^2.0.0"
+    "koa-generic-session": "^2.0.1",
+    "lint-staged": "latest",
+    "nyc": "latest",
+    "remark-cli": "latest",
+    "remark-preset-github": "latest",
+    "supertest": "^3.3.0",
+    "xo": "latest"
   },
   "engines": {
-    "node": ">= 6.x"
+    "node": ">= 6.4"
   },
+  "files": [
+    "lib"
+  ],
   "homepage": "https://github.com/koajs/csrf",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "keywords": [
     "cross",
     "csrf",
@@ -54,16 +78,45 @@
     "site"
   ],
   "license": "MIT",
+  "lint-staged": {
+    "linters": {
+      "*.js": [
+        "xo --fix",
+        "git add"
+      ],
+      "*.md": [
+        "remark . -qfo",
+        "git add"
+      ],
+      "package.json": [
+        "fixpack",
+        "git add"
+      ]
+    }
+  },
   "main": "lib/index.js",
+  "remarkConfig": {
+    "plugins": [
+      "preset-github"
+    ]
+  },
   "repository": "koajs/csrf",
   "scripts": {
-    "analyze-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul cover node_modules/.bin/_mocha",
-    "check-coverage": "node_modules/.bin/babel-node node_modules/.bin/istanbul check-coverage",
-    "compile": "rm -rf lib/ && babel -d lib src",
-    "coverage": "rm -rf coverage/ && npm run analyze-coverage && npm run check-coverage && node_modules/.bin/codecov",
-    "lint": "eslint .",
-    "mocha": "NODE_ENV=test node_modules/.bin/_mocha",
-    "prepublish": "npm run test",
-    "test": "npm run lint && npm run compile && npm run coverage"
+    "ava": "cross-env NODE_ENV=test ava",
+    "build": "npm run build:clean && npm run build:lib",
+    "build:clean": "rimraf lib",
+    "build:lib": "babel src --out-dir lib",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
+    "lint": "xo && remark . -qfo && eslint lib",
+    "nyc": "cross-env NODE_ENV=test nyc ava",
+    "test": "npm run build && npm run lint && npm run ava",
+    "test-coverage": "npm run build && npm run lint && npm run nyc"
+  },
+  "xo": {
+    "prettier": true,
+    "space": true,
+    "extends": [
+      "xo-lass"
+    ]
   }
 }

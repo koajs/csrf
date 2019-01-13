@@ -1,120 +1,140 @@
+# koa-csrf
 
-# Koa CSRF
+[![build status](https://img.shields.io/travis/koajs/csrf.svg)](https://travis-ci.com/koajs/csrf)
+[![code coverage](https://img.shields.io/codecov/c/github/koajs/csrf.svg)](https://codecov.io/gh/koajs/csrf)
+[![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
+[![license](https://img.shields.io/github/license/koajs/csrf.svg)](LICENSE)
 
-[![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
-[![Dependency Status][david-image]][david-url]
-[![License][license-image]][license-url]
-[![Downloads][downloads-image]][downloads-url]
+> CSRF tokens for Koa
 
-> CSRF tokens for Koa >= 2.x (next).  For Koa < 2.x (next) see the 2.x branch.
+
+## Table of Contents
+
+* [Install](#install)
+* [Usage](#usage)
+* [Options](#options)
+* [Open Source Contributor Requests](#open-source-contributor-requests)
+* [Contributors](#contributors)
+* [License](#license)
 
 
 ## Install
 
-> For koa@>=2.x (next):
+> For versions of Koa &lt;2.x please use `koa-csrf@2.x`
 
-```bash
-npm install --save koa-csrf@3.x
+[npm][]:
+
+```sh
+npm install koa-csrf
 ```
 
-> For koa@<2.x:
+[yarn][]:
 
-```bash
-npm install --save koa-csrf@2.x
+```sh
+yarn add koa-csrf
 ```
 
 
 ## Usage
 
 1. Add middleware in Koa app (default options are shown):
-  ```js
-  import Koa from 'koa';
-  import bodyParser from 'koa-bodyparser';
-  import session from 'koa-generic-session';
-  import convert from 'koa-convert';
-  import CSRF from 'koa-csrf';
 
-  const app = new Koa();
+   ```js
+   const Koa require('koa');
+   const bodyParser require('koa-bodyparser');
+   const session require('koa-generic-session');
+   const convert require('koa-convert');
+   const CSRF require('koa-csrf');
 
-  // set the session keys
-  app.keys = [ 'a', 'b' ];
+   const app = new Koa();
 
-  // add session support
-  app.use(convert(session()));
+   // set the session keys
+   app.keys = [ 'a', 'b' ];
 
-  // add body parsing
-  app.use(bodyParser());
+   // add session support
+   app.use(convert(session()));
 
-  // add the CSRF middleware
-  app.use(new CSRF({
-    invalidSessionSecretMessage: 'Invalid session secret',
-    invalidSessionSecretStatusCode: 403,
-    invalidTokenMessage: 'Invalid CSRF token',
-    invalidTokenStatusCode: 403,
-    excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
-    disableQuery: false
-  }));
+   // add body parsing
+   app.use(bodyParser());
 
-  // your middleware here (e.g. parse a form submit)
-  app.use((ctx, next) => {
+   // add the CSRF middleware
+   app.use(new CSRF({
+     invalidTokenMessage: 'Invalid CSRF token',
+     invalidTokenStatusCode: 403,
+     excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
+     disableQuery: false
+   }));
 
-    if (![ 'GET', 'POST' ].includes(ctx.method))
-      return next();
+   // your middleware here (e.g. parse a form submit)
+   app.use((ctx, next) => {
+     if (![ 'GET', 'POST' ].includes(ctx.method))
+       return next();
+     if (ctx.method === 'GET') {
+       ctx.body = ctx.csrf;
+       return;
+     }
+     ctx.body = 'OK';
+   });
 
-    if (ctx.method === 'GET') {
-      ctx.body = ctx.csrf;
-      return;
-    }
-
-    ctx.body = 'OK';
-
-  });
-
-  app.listen();
-  ```
+   app.listen();
+   ```
 
 2. Add the CSRF token in your template forms:
 
-  > Jade Template:
+   > Jade Template:
 
-  ```jade
-  form(action='/register', method='POST')
-    input(type='hidden', name='_csrf', value=csrf)
-    input(type='email', name='email', placeholder='Email')
-    input(type='password', name='password', placeholder='Password')
-    button(type='submit') Register
-  ```
+   ```jade
+   form(action='/register', method='POST')
+     input(type='hidden', name='_csrf', value=csrf)
+     input(type='email', name='email', placeholder='Email')
+     input(type='password', name='password', placeholder='Password')
+     button(type='submit') Register
+   ```
 
-  > EJS Template:
+   > EJS Template:
 
-  ```ejs
-  <form action="/register" method="POST">
-    <input type="hidden" name="_csrf" value="<%= csrf %>" />
-    <input type="email" name="email" placeholder="Email" />
-    <input type="password" name="password" placeholder="Password" />
-    <button type="submit">Register</button>
-  </form>
-  ```
+   ```ejs
+   <form action="/register" method="POST">
+     <input type="hidden" name="_csrf" value="<%= csrf %>" />
+     <input type="email" name="email" placeholder="Email" />
+     <input type="password" name="password" placeholder="Password" />
+     <button type="submit">Register</button>
+   </form>
+   ```
+
+
+## Options
+
+* `invalidTokenMessage` (String or Function) - defaults to `Invalid CSRF token`, but can also be a function that accepts one argument `ctx` (useful for i18n translation, e.g. using `ctx.request.t('some message')` via [@ladjs/i18n][]
+* `invalidTokenStatusCode` (Number) - defaults to `403`
+* `excludedMethods` (Array) - defaults to `[ 'GET', 'HEAD', 'OPTIONS' ]`
+* `disableQuery` (Boolean) - defaults to `false`
+
 
 ## Open Source Contributor Requests
 
-- [ ] Existing methods from 1.x package added to 3.x
-- [ ] Existing tests from 1.x package added to 3.x
+* [ ] Existing methods from 1.x package added to 3.x
+* [ ] Existing tests from 1.x package added to 3.x
 
 
-[npm-image]: https://img.shields.io/npm/v/koa-csrf.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/koa-csrf
-[github-tag]: http://img.shields.io/github/tag/koajs/csrf.svg?style=flat-square
-[github-url]: https://github.com/koajs/csrf/tags
-[travis-image]: https://img.shields.io/travis/koajs/csrf.svg?style=flat-square
-[travis-url]: https://travis-ci.org/koajs/csrf
-[coveralls-image]: https://img.shields.io/coveralls/koajs/csrf.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/csrf?branch=master
-[david-image]: http://img.shields.io/david/koajs/csrf.svg?style=flat-square
-[david-url]: https://david-dm.org/koajs/csrf
-[license-image]: http://img.shields.io/npm/l/koa-csrf.svg?style=flat-square
-[license-url]: LICENSE
-[downloads-image]: http://img.shields.io/npm/dm/koa-csrf.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/koa-csrf
+## Contributors
+
+| Name           | Website                           |
+| -------------- | --------------------------------- |
+| **Nick Baugh** | <https://github.com/niftylettuce> |
+
+
+## License
+
+[MIT](LICENSE) © [Jonathan Ong](http://jongleberry.com)
+
+
+## 
+
+[@ladjs/i18n]: https://github.com/ladjs/i18n
+
+[npm]: https://www.npmjs.com/
+
+[yarn]: https://yarnpkg.com/
