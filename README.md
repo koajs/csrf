@@ -42,11 +42,11 @@ yarn add koa-csrf
 1. Add middleware in Koa app (default options are shown):
 
    ```js
-   const Koa require('koa');
-   const bodyParser require('koa-bodyparser');
-   const session require('koa-generic-session');
-   const convert require('koa-convert');
-   const CSRF require('koa-csrf');
+   const Koa = require('koa');
+   const bodyParser = require('koa-bodyparser');
+   const session = require('koa-generic-session');
+   const convert = require('koa-convert');
+   const CSRF = require('koa-csrf');
 
    const app = new Koa();
 
