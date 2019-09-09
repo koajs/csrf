@@ -24,6 +24,7 @@ test.before.cb(t => {
       ctx.body = ctx.csrf;
       return;
     }
+
     ctx.body = 'OK';
   });
   request = supertest.agent(app.listen(t.end));

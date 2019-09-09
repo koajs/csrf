@@ -22,7 +22,6 @@
     }
   ],
   "dependencies": {
-    "auto-bind": "^2.0.0",
     "csrf": "^3.0.6"
   },
   "devDependencies": {

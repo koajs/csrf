@@ -1,5 +1,4 @@
 const csrf = require('csrf');
-const autoBind = require('auto-bind');
 
 class CSRF {
   constructor(opts = {}) {
@@ -15,9 +14,7 @@ class CSRF {
 
     this.tokens = csrf(opts);
 
-    autoBind(this);
-
-    return this.middleware;
+    return this.middleware.bind(this);
   }
 
   middleware(ctx, next) {
