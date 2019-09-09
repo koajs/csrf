@@ -22,23 +22,23 @@
     }
   ],
   "dependencies": {
-    "csrf": "^3.0.6"
+    "csrf": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "ava": "1.0.1",
+    "ava": "2.3.0",
     "codecov": "latest",
     "cross-env": "latest",
     "eslint": "latest",
     "eslint-config-xo-lass": "latest",
-    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-node": "^10.0.0",
     "fixpack": "latest",
     "husky": "latest",
-    "koa": "^2.6.2",
+    "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
     "koa-convert": "^1.2.0",
     "koa-generic-session": "^2.0.1",
@@ -46,7 +46,7 @@
     "nyc": "latest",
     "remark-cli": "latest",
     "remark-preset-github": "latest",
-    "supertest": "^3.3.0",
+    "supertest": "^4.0.2",
     "xo": "latest"
   },
   "engines": {
@@ -78,20 +78,18 @@
   ],
   "license": "MIT",
   "lint-staged": {
-    "linters": {
-      "*.js": [
-        "xo --fix",
-        "git add"
-      ],
-      "*.md": [
-        "remark . -qfo",
-        "git add"
-      ],
-      "package.json": [
-        "fixpack",
-        "git add"
-      ]
-    }
+    "*.js": [
+      "xo --fix",
+      "git add"
+    ],
+    "*.md": [
+      "remark . -qfo",
+      "git add"
+    ],
+    "package.json": [
+      "fixpack",
+      "git add"
+    ]
   },
   "main": "lib/index.js",
   "remarkConfig": {
