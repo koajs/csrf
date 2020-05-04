@@ -7,7 +7,8 @@ class CSRF {
         invalidTokenMessage: 'Invalid CSRF token',
         invalidTokenStatusCode: 403,
         excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
-        disableQuery: false
+        disableQuery: false,
+        excludePath:[]
       },
       opts
     );
@@ -39,6 +40,10 @@ class CSRF {
     ctx.response.__defineGetter__('csrf', () => ctx.csrf);
 
     if (this.opts.excludedMethods.indexOf(ctx.method) !== -1) {
+      return next();
+    }
+
+    if ( this.opts.excludePath.findIndex(path => path === ctx.path) >= 0) {
       return next();
     }
 

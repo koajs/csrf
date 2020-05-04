@@ -111,7 +111,7 @@ yarn add koa-csrf
 * `invalidTokenStatusCode` (Number) - defaults to `403`
 * `excludedMethods` (Array) - defaults to `[ 'GET', 'HEAD', 'OPTIONS' ]`
 * `disableQuery` (Boolean) - defaults to `false`
-
+* `excludePath` (Array) - defaults to none. Excludes listed paths from CSRF check.
 
 ## Open Source Contributor Requests
 
