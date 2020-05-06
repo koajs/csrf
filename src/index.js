@@ -7,7 +7,7 @@ class CSRF {
         invalidTokenMessage: 'Invalid CSRF token',
         invalidTokenStatusCode: 403,
         excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
-        excludedHosts: [/^\:.*\:127\..*/, /^docker/],
+        excludedHosts: [/^(:.*:)?172\..*/, /^docker/],
         disableQuery: false
       },
       opts
