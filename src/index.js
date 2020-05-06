@@ -43,10 +43,11 @@ class CSRF {
       return next();
     }
 
-    if (this.opts.excludedHosts.some(x => x.test(ctx.request.ip)) || this.opts.excludedHosts.some(x => x.test(ctx.request.host)) ) {
+    if (this.opts.excludedHosts.some(x => x.test(ctx.request.ip)) ||
+        this.opts.excludedHosts.some(x => x.test(ctx.request.host))) {
       return next();
     }
-    
+
     if (!ctx.session.secret) {
       ctx.session.secret = this.tokens.secretSync();
     }
