@@ -1,12 +1,23 @@
-
-# osx
+#       OS        #
+###################
 .DS_Store
+.idea
+Thumbs.db
+tmp/
+temp/
 
-# project
-node_modules/
-logs
-*.log
-npm-debug.log*
-*.idea
-coverage/
-lib
+
+#     Node.js     #
+###################
+node_modules
+package-lock.json
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+
+#       NYC       #
+###################
+coverage
+*.lcov
+.nyc_output
