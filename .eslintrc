@@ -1,5 +1,8 @@
 {
-  "extends": ["eslint:recommended", "plugin:node/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:node/recommended"
+  ],
   "rules": {
     "no-unsafe-finally": "warn",
     "no-cond-assign": "warn",
