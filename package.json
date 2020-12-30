@@ -19,15 +19,17 @@
       "name": "Nick Baugh",
       "email": "niftylettuce@gmail.com",
       "url": "https://github.com/niftylettuce"
+    },
+    {
+      "name": "Imed Jaberi",
+      "email": "imed_jebari@hotmail.fr",
+      "url": "https://www.3imed-jaberi.com/"
     }
   ],
   "dependencies": {
     "csrf": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
     "ava": "2.3.0",
@@ -50,10 +52,10 @@
     "xo": "latest"
   },
   "engines": {
-    "node": ">= 6.4"
+    "node": ">= 10"
   },
   "files": [
-    "lib"
+    "index.js"
   ],
   "homepage": "https://github.com/koajs/csrf",
   "husky": {
@@ -71,6 +73,7 @@
     "koa@2",
     "koa@next",
     "koanext",
+    "middelware",
     "next",
     "request",
     "security",
@@ -91,7 +94,7 @@
       "git add"
     ]
   },
-  "main": "lib/index.js",
+  "main": "index.js",
   "remarkConfig": {
     "plugins": [
       "preset-github"
@@ -100,14 +103,11 @@
   "repository": "koajs/csrf",
   "scripts": {
     "ava": "cross-env NODE_ENV=test ava",
-    "build": "npm run build:clean && npm run build:lib",
-    "build:clean": "rimraf lib",
-    "build:lib": "babel src --out-dir lib",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "xo && remark . -qfo && eslint lib",
+    "lint": "xo && remark . -qfo && eslint index.*",
     "nyc": "cross-env NODE_ENV=test nyc ava",
-    "test": "npm run build && npm run lint && npm run ava",
-    "test-coverage": "npm run build && npm run lint && npm run nyc"
+    "test": "npm run lint && npm run ava",
+    "test-coverage": "npm run lint && npm run nyc"
   },
   "xo": {
     "prettier": true,
