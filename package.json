@@ -30,7 +30,7 @@
     "@babel/preset-env": "^7.6.0",
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
-    "ava": "2.3.0",
+    "ava": "^3.15.0",
     "codecov": "latest",
     "cross-env": "latest",
     "eslint": "latest",
@@ -99,7 +99,7 @@
   },
   "repository": "koajs/csrf",
   "scripts": {
-    "ava": "cross-env NODE_ENV=test ava",
+    "ava": "cross-env NODE_ENV=test ava --verbose",
     "build": "npm run build:clean && npm run build:lib",
     "build:clean": "rimraf lib",
     "build:lib": "babel src --out-dir lib",
