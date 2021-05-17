@@ -1,4 +1,5 @@
 const csrf = require('csrf');
+const debug = require('debug')('koa-csrf');
 
 class CSRF {
   constructor(opts = {}) {
@@ -20,19 +21,22 @@ class CSRF {
   middleware(ctx, next) {
     ctx.__defineGetter__('csrf', () => {
       if (ctx._csrf) {
+        debug(`return csrf:${ctx._csrf}`);
         return ctx._csrf;
       }
 
       if (!ctx.session) {
+        debug(`No session present`);
         return null;
       }
 
       if (!ctx.session.secret) {
         ctx.session.secret = this.tokens.secretSync();
+        debug(`created new session secret: ${ctx.session.secret}`);
       }
 
       ctx._csrf = this.tokens.create(ctx.session.secret);
-
+      debug(`created new csrf ${ctx._csrf}`);
       return ctx._csrf;
     });
 
@@ -44,6 +48,9 @@ class CSRF {
 
     if (!ctx.session.secret) {
       ctx.session.secret = this.tokens.secretSync();
+      debug(
+        `session secret does not exist, created new secret:${ctx.session.secret}`
+      );
     }
 
     const bodyToken =
@@ -60,6 +67,7 @@ class CSRF {
       ctx.get('x-xsrf-token');
 
     if (!token) {
+      debug('token not present, invalid');
       return ctx.throw(
         this.opts.invalidTokenStatusCode,
         typeof this.opts.invalidTokenMessage === 'function'
@@ -69,6 +77,9 @@ class CSRF {
     }
 
     if (!this.tokens.verify(ctx.session.secret, token)) {
+      debug(
+        `csrf failed with token:${token}, and secret:${ctx.session.secret}`
+      );
       return ctx.throw(
         this.opts.invalidTokenStatusCode,
         typeof this.opts.invalidTokenMessage === 'function'

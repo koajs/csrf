@@ -1,7 +1,7 @@
 {
-  "name": "koa-csrf",
+  "name": "@lookio/koa-csrf",
   "description": "CSRF tokens for Koa",
-  "version": "3.0.8",
+  "version": "3.0.8-1",
   "author": {
     "name": "Jonathan Ong",
     "email": "me@jongleberry.com",
@@ -22,7 +22,8 @@
     }
   ],
   "dependencies": {
-    "csrf": "^3.1.0"
+    "csrf": "^3.1.0",
+    "debug": "^3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
