@@ -8,6 +8,7 @@ class CSRF {
         invalidTokenStatusCode: 403,
         excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
         excludedHosts: [/^(:.*:)?172\..*/, /^docker/],
+        excludedPath: null,
         disableQuery: false
       },
       opts
@@ -45,7 +46,8 @@ class CSRF {
 
     if (
       this.opts.excludedHosts.some(x => x.test(ctx.request.ip)) ||
-      this.opts.excludedHosts.some(x => x.test(ctx.request.host))
+      this.opts.excludedHosts.some(x => x.test(ctx.request.host)) ||
+      (this.opts.excludedPath != null && this.opts.excludedPath.some(x => x.test(ctx.request.url)))
     ) {
       return next();
     }
