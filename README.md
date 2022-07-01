@@ -60,7 +60,7 @@ yarn add koa-csrf
    app.use(bodyParser());
 
    // add the CSRF middleware
-   app.use(new CSRF({
+   app.use(CSRF({
      invalidTokenMessage: 'Invalid CSRF token',
      invalidTokenStatusCode: 403,
      excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
@@ -121,9 +121,10 @@ yarn add koa-csrf
 
 ## Contributors
 
-| Name           | Website                           |
-| -------------- | --------------------------------- |
-| **Nick Baugh** | <https://github.com/niftylettuce> |
+| Name            | Website                           |
+| --------------- | --------------------------------- |
+| **Nick Baugh**  | <https://github.com/niftylettuce> |
+| **Imed Jaberi** | <https://www.3imed-jaberi.com/>   |
 
 
 ## License

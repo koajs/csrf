@@ -5,7 +5,7 @@ const session = require('koa-generic-session');
 const convert = require('koa-convert');
 const supertest = require('supertest');
 
-const CSRF = require('..');
+const CSRF = require('.');
 
 const tokenRegExp = /^\w+-[\w+/-]+/;
 
@@ -17,7 +17,8 @@ test.before.cb(t => {
   app.keys = ['a', 'b'];
   app.use(convert(session()));
   app.use(bodyParser());
-  app.use(new CSRF());
+  // eslint-disable-next-line new-cap
+  app.use(CSRF());
   app.use((ctx, next) => {
     if (!['GET', 'POST'].includes(ctx.method)) return next();
     if (ctx.method === 'GET') {
