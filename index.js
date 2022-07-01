@@ -1,26 +1,5 @@
-/*!
- * koa-csrf
- *
- * Copyright(c) 2020 koa contributors
- * MIT Licensed
- */
-
-'use strict';
-
-/**
- * Module dependencies.
- */
 const csrf = require('csrf');
 
-/**
- * Expose `CSRF()`.
- */
-
-module.exports = CSRF;
-
-/**
- *
- */
 function CSRF(opts = {}) {
   const tokens = csrf(opts);
 
@@ -32,11 +11,11 @@ function CSRF(opts = {}) {
     ...opts
   };
 
-  return function(ctx, next) {
-    Object.defineProperty(ctx, 'csrf', {
-      get: () => {
-        if (ctx._csrf) {
-          return ctx._csrf;
+  return function (ctx, next) {
+    Object.defineProperty(ctx.state, 'csrf', {
+      get() {
+        if (ctx.state._csrf) {
+          return ctx.state._csrf;
         }
 
         if (!ctx.session) {
@@ -47,17 +26,24 @@ function CSRF(opts = {}) {
           ctx.session.secret = tokens.secretSync();
         }
 
-        ctx._csrf = tokens.create(ctx.session.secret);
+        ctx.state._csrf = tokens.create(ctx.session.secret);
 
-        return ctx._csrf;
+        return ctx.state._csrf;
+      }
+    });
+
+    // backwards compatible
+    Object.defineProperty(ctx, 'csrf', {
+      get() {
+        return ctx.state.csrf;
       }
     });
 
     Object.defineProperty(ctx.response, 'csrf', {
-      get: () => ctx.csrf
+      get: () => ctx.state.csrf
     });
 
-    if (opts.excludedMethods.indexOf(ctx.method) !== -1) {
+    if (opts.excludedMethods.includes(ctx.method)) {
       return next();
     }
 
@@ -72,7 +58,7 @@ function CSRF(opts = {}) {
 
     const token =
       bodyToken ||
-      (!this.opts.disableQuery && ctx.query && ctx.query._csrf) ||
+      (!opts.disableQuery && ctx.query && ctx.query._csrf) ||
       ctx.get('csrf-token') ||
       ctx.get('xsrf-token') ||
       ctx.get('x-csrf-token') ||
@@ -99,3 +85,5 @@ function CSRF(opts = {}) {
     return next();
   };
 }
+
+module.exports = CSRF;

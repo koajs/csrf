@@ -1,7 +1,7 @@
 # koa-csrf
 
+[![build status](https://github.com/koajs/csrf/actions/workflows/ci.yml/badge.svg)](https://github.com/koajs/csrf/actions/workflows/ci.yml)
 [![build status](https://img.shields.io/travis/koajs/csrf.svg)](https://travis-ci.com/koajs/csrf)
-[![code coverage](https://img.shields.io/codecov/c/github/koajs/csrf.svg)](https://codecov.io/gh/koajs/csrf)
 [![code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![made with lass](https://img.shields.io/badge/made_with-lass-95CC28.svg)](https://lass.js.org)
@@ -22,18 +22,10 @@
 
 ## Install
 
-> For versions of Koa &lt;2.x please use `koa-csrf@2.x`
-
 [npm][]:
 
 ```sh
 npm install koa-csrf
-```
-
-[yarn][]:
-
-```sh
-yarn add koa-csrf
 ```
 
 
@@ -60,7 +52,7 @@ yarn add koa-csrf
    app.use(bodyParser());
 
    // add the CSRF middleware
-   app.use(CSRF({
+   app.use(new CSRF({
      invalidTokenMessage: 'Invalid CSRF token',
      invalidTokenStatusCode: 403,
      excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
@@ -72,7 +64,7 @@ yarn add koa-csrf
      if (![ 'GET', 'POST' ].includes(ctx.method))
        return next();
      if (ctx.method === 'GET') {
-       ctx.body = ctx.csrf;
+       ctx.body = ctx.state.csrf;
        return;
      }
      ctx.body = 'OK';
@@ -132,10 +124,8 @@ yarn add koa-csrf
 [MIT](LICENSE) © [Jonathan Ong](http://jongleberry.com)
 
 
-## 
+##
 
 [@ladjs/i18n]: https://github.com/ladjs/i18n
 
 [npm]: https://www.npmjs.com/
-
-[yarn]: https://yarnpkg.com/
