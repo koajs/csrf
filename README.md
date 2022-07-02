@@ -32,7 +32,7 @@ npm install koa-csrf
 
 ## Usage
 
-1. Add middleware in Koa app (default options are shown):
+1. Add middleware in Koa app (see [options](#options) below):
 
    ```js
    const Koa = require('koa');
@@ -53,12 +53,7 @@ npm install koa-csrf
    app.use(bodyParser());
 
    // add the CSRF middleware
-   app.use(new CSRF({
-     invalidTokenMessage: 'Invalid CSRF token',
-     invalidTokenStatusCode: 403,
-     excludedMethods: [ 'GET', 'HEAD', 'OPTIONS' ],
-     disableQuery: false
-   }));
+   app.use(new CSRF());
 
    // your middleware here (e.g. parse a form submit)
    app.use((ctx, next) => {
