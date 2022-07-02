@@ -9,7 +9,7 @@
 
 > CSRF tokens for Koa
 
-> **NOTE:** As of v5.0.0+ `ctx.csrf`, `ctx_csrf`, and `ctx.response.csrf` are removed – instead use `ctx.state._csrf`
+> **NOTE:** As of v5.0.0+ `ctx.csrf`, `ctx_csrf`, and `ctx.response.csrf` are removed – instead use `ctx.state._csrf`.  Furthermore we have dropped `invalidTokenMessage` and `invalidTokenStatusCode` in favor of an `errorHandler` function option.
 
 
 ## Table of Contents
@@ -100,8 +100,7 @@ npm install koa-csrf
 
 ## Options
 
-* `invalidTokenMessage` (String or Function) - defaults to `Invalid CSRF token`, but can also be a function that accepts one argument `ctx` (useful for i18n translation, e.g. using `ctx.request.t('some message')` via [@ladjs/i18n][]
-* `invalidTokenStatusCode` (Number) - defaults to `403`
+* `errorHandler` (Function) - defaults to a function that returns `ctx.throw(403, 'Invalid CSRF token')`
 * `excludedMethods` (Array) - defaults to `[ 'GET', 'HEAD', 'OPTIONS' ]`
 * `disableQuery` (Boolean) - defaults to `false`
 * `ignoredPathGlobs` (Array) - defaults to an empty Array, but you can pass an Array of glob paths to ignore
@@ -121,7 +120,5 @@ npm install koa-csrf
 
 
 ##
-
-[@ladjs/i18n]: https://github.com/ladjs/i18n
 
 [npm]: https://www.npmjs.com/

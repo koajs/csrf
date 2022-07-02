@@ -6,8 +6,9 @@ function CSRF(opts = {}) {
   const tokens = csrf(opts);
 
   opts = {
-    invalidTokenMessage: 'Invalid CSRF token',
-    invalidTokenStatusCode: 403,
+    errorHandler(ctx) {
+      return ctx.throw(403, 'Invalid CSRF token');
+    },
     excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
     disableQuery: false,
     ignoredPathGlobs: [],
@@ -50,14 +51,8 @@ function CSRF(opts = {}) {
       ctx.get('x-csrf-token') ||
       ctx.get('x-xsrf-token');
 
-    if (!token || !tokens.verify(ctx.session.secret, token)) {
-      return ctx.throw(
-        opts.invalidTokenStatusCode,
-        typeof opts.invalidTokenMessage === 'function'
-          ? opts.invalidTokenMessage(ctx)
-          : opts.invalidTokenMessage
-      );
-    }
+    if (!token || !tokens.verify(ctx.session.secret, token))
+      return opts.errorHandler(ctx);
 
     return next();
   };
