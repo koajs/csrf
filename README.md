@@ -9,13 +9,14 @@
 
 > CSRF tokens for Koa
 
+> **NOTE:** As of v5.0.0+ `ctx.csrf`, `ctx_csrf`, and `ctx.response.csrf` are removed – instead use `ctx.state._csrf`
+
 
 ## Table of Contents
 
 * [Install](#install)
 * [Usage](#usage)
 * [Options](#options)
-* [Open Source Contributor Requests](#open-source-contributor-requests)
 * [Contributors](#contributors)
 * [License](#license)
 
@@ -64,7 +65,7 @@ npm install koa-csrf
      if (![ 'GET', 'POST' ].includes(ctx.method))
        return next();
      if (ctx.method === 'GET') {
-       ctx.body = ctx.csrf;
+       ctx.body = ctx.state._csrf;
        return;
      }
      ctx.body = 'OK';
@@ -79,7 +80,7 @@ npm install koa-csrf
 
    ```jade
    form(action='/register', method='POST')
-     input(type='hidden', name='_csrf', value=csrf)
+     input(type='hidden', name='_csrf', value=_csrf)
      input(type='email', name='email', placeholder='Email')
      input(type='password', name='password', placeholder='Password')
      button(type='submit') Register
@@ -89,7 +90,7 @@ npm install koa-csrf
 
    ```ejs
    <form action="/register" method="POST">
-     <input type="hidden" name="_csrf" value="<%= csrf %>" />
+     <input type="hidden" name="_csrf" value="<%= _csrf %>" />
      <input type="email" name="email" placeholder="Email" />
      <input type="password" name="password" placeholder="Password" />
      <button type="submit">Register</button>
@@ -103,12 +104,7 @@ npm install koa-csrf
 * `invalidTokenStatusCode` (Number) - defaults to `403`
 * `excludedMethods` (Array) - defaults to `[ 'GET', 'HEAD', 'OPTIONS' ]`
 * `disableQuery` (Boolean) - defaults to `false`
-
-
-## Open Source Contributor Requests
-
-* [ ] Existing methods from 1.x package added to 3.x
-* [ ] Existing tests from 1.x package added to 3.x
+* `ignoredPathGlobs` (Array) - defaults to an empty Array, but you can pass an Array of glob paths to ignore
 
 
 ## Contributors

@@ -2,7 +2,6 @@ const test = require('ava');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-generic-session');
-const convert = require('koa-convert');
 const supertest = require('supertest');
 
 const CSRF = require('..');
@@ -11,7 +10,10 @@ const tokenRegExp = /^\w+-[\w+/-]+/;
 
 test.before((t) => {
   t.context.request = getApp();
-  t.context.requestWithOpts = getApp({ disableQuery: true });
+  t.context.requestWithOpts = getApp({
+    disableQuery: true,
+    ignoredPathGlobs: ['/beep']
+  });
 });
 
 test('should create a token', async (t) => {
@@ -94,16 +96,24 @@ test('should not respect the _csrf querystring given disableQuery=true', async (
   t.is(res2.text, 'Invalid CSRF token');
 });
 
+test('should ignore CSRF validation when ignoredPathGlobs matches', async (t) => {
+  await t.context.requestWithOpts.get('/');
+  await t.context.requestWithOpts.post('/beep');
+  const res = await t.context.requestWithOpts.post('/boop');
+  t.is(res.status, 403);
+  t.is(res.text, 'Invalid CSRF token');
+});
+
 function getApp(opts = {}) {
   const app = new Koa();
   app.keys = ['a', 'b'];
-  app.use(convert(session()));
+  app.use(session());
   app.use(bodyParser());
   app.use(new CSRF(opts));
   app.use((ctx, next) => {
     if (!['GET', 'POST'].includes(ctx.method)) return next();
     if (ctx.method === 'GET') {
-      ctx.body = ctx.csrf;
+      ctx.body = ctx.state._csrf;
       return;
     }
 

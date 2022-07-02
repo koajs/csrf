@@ -1,4 +1,6 @@
 const csrf = require('csrf');
+const isSANB = require('is-string-and-not-blank');
+const multimatch = require('multimatch');
 
 function CSRF(opts = {}) {
   const tokens = csrf(opts);
@@ -8,65 +10,47 @@ function CSRF(opts = {}) {
     invalidTokenStatusCode: 403,
     excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
     disableQuery: false,
+    ignoredPathGlobs: [],
     ...opts
   };
 
-  return function (ctx, next) {
-    Object.defineProperty(ctx, 'csrf', {
-      get() {
-        if (ctx._csrf) {
-          return ctx._csrf;
-        }
+  // eslint-disable-next-line complexity
+  return async function (ctx, next) {
+    if (!ctx.session) return next();
 
-        if (!ctx.session) {
-          return null;
-        }
+    if (!ctx.session.secret) ctx.session.secret = await tokens.secret();
 
-        if (!ctx.session.secret) {
-          ctx.session.secret = tokens.secretSync();
-        }
+    if (!ctx.state._csrf) ctx.state._csrf = tokens.create(ctx.session.secret);
 
-        ctx._csrf = tokens.create(ctx.session.secret);
+    if (opts.excludedMethods.includes(ctx.method)) return next();
 
-        return ctx._csrf;
-      }
-    });
-
-    Object.defineProperty(ctx.response, 'csrf', {
-      get: () => ctx.csrf
-    });
-
-    if (opts.excludedMethods.includes(ctx.method)) {
-      return next();
+    // check against ignored/whitelisted redirect middleware paths
+    if (
+      Array.isArray(opts.ignoredPathGlobs) &&
+      opts.ignoredPathGlobs.length > 0
+    ) {
+      const match = multimatch(ctx.path, opts.ignoredPathGlobs);
+      if (Array.isArray(match) && match.length > 0) return next();
     }
 
-    if (!ctx.session.secret) {
-      ctx.session.secret = tokens.secretSync();
-    }
+    const bodyToken = isSANB(ctx.request.body._csrf)
+      ? ctx.request.body._csrf
+      : false;
 
-    const bodyToken =
-      ctx.request.body && typeof ctx.request.body._csrf === 'string'
-        ? ctx.request.body._csrf
+    const queryToken =
+      !bodyToken && !opts.disableQuery && ctx.query && isSANB(ctx.query._csrf)
+        ? ctx.query._csrf
         : false;
 
     const token =
       bodyToken ||
-      (!opts.disableQuery && ctx.query && ctx.query._csrf) ||
+      queryToken ||
       ctx.get('csrf-token') ||
       ctx.get('xsrf-token') ||
       ctx.get('x-csrf-token') ||
       ctx.get('x-xsrf-token');
 
-    if (!token) {
-      return ctx.throw(
-        opts.invalidTokenStatusCode,
-        typeof opts.invalidTokenMessage === 'function'
-          ? opts.invalidTokenMessage(ctx)
-          : opts.invalidTokenMessage
-      );
-    }
-
-    if (!tokens.verify(ctx.session.secret, token)) {
+    if (!token || !tokens.verify(ctx.session.secret, token)) {
       return ctx.throw(
         opts.invalidTokenStatusCode,
         typeof opts.invalidTokenMessage === 'function'

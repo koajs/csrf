@@ -22,14 +22,16 @@
     }
   ],
   "dependencies": {
-    "csrf": "^3.1.0"
+    "csrf": "^3.1.0",
+    "is-string-and-not-blank": "^0.0.2",
+    "multimatch": "5"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "ava": "^4.3.0",
     "cross-env": "^7.0.3",
-    "eslint": "^8.18.0",
+    "eslint": "^8.19.0",
     "eslint-config-xo-lass": "^2.0.1",
     "fixpack": "^4.0.0",
     "husky": "^8.0.1",
