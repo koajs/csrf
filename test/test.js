@@ -94,12 +94,6 @@ test('should not respect the _csrf querystring given disableQuery=true', async (
   t.is(res2.text, 'Invalid CSRF token');
 });
 
-test('backwards compatible with ctx.csrf usage', async (t) => {
-  const res = await t.context.request.get('/?old=true');
-  t.is(res.status, 200);
-  t.regex(res.text, tokenRegExp);
-});
-
 function getApp(opts = {}) {
   const app = new Koa();
   app.keys = ['a', 'b'];
@@ -109,7 +103,7 @@ function getApp(opts = {}) {
   app.use((ctx, next) => {
     if (!['GET', 'POST'].includes(ctx.method)) return next();
     if (ctx.method === 'GET') {
-      ctx.body = ctx.query.old ? ctx.csrf : ctx.state.csrf;
+      ctx.body = ctx.csrf;
       return;
     }
 

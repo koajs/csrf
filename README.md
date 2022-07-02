@@ -64,7 +64,7 @@ npm install koa-csrf
      if (![ 'GET', 'POST' ].includes(ctx.method))
        return next();
      if (ctx.method === 'GET') {
-       ctx.body = ctx.state.csrf;
+       ctx.body = ctx.csrf;
        return;
      }
      ctx.body = 'OK';

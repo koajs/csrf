@@ -12,10 +12,10 @@ function CSRF(opts = {}) {
   };
 
   return function (ctx, next) {
-    Object.defineProperty(ctx.state, 'csrf', {
+    Object.defineProperty(ctx, 'csrf', {
       get() {
-        if (ctx.state._csrf) {
-          return ctx.state._csrf;
+        if (ctx._csrf) {
+          return ctx._csrf;
         }
 
         if (!ctx.session) {
@@ -26,21 +26,14 @@ function CSRF(opts = {}) {
           ctx.session.secret = tokens.secretSync();
         }
 
-        ctx.state._csrf = tokens.create(ctx.session.secret);
+        ctx._csrf = tokens.create(ctx.session.secret);
 
-        return ctx.state._csrf;
-      }
-    });
-
-    // backwards compatible
-    Object.defineProperty(ctx, 'csrf', {
-      get() {
-        return ctx.state.csrf;
+        return ctx._csrf;
       }
     });
 
     Object.defineProperty(ctx.response, 'csrf', {
-      get: () => ctx.state.csrf
+      get: () => ctx.csrf
     });
 
     if (opts.excludedMethods.includes(ctx.method)) {
